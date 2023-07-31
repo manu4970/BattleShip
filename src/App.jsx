@@ -1,33 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import CpuBoard from './components/CpuBoard'
+import Info from './components/Info'
+import PlayerBoard from './components/PlayerBoard'
+import Ships from './components/Ships'
+import './styles/App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+function App () {
+  const [playerBoard, setPlayerBoard] = useState([])
+  const [cpuBoard, setCpuBoard] = useState([])
+
+  const ships = ['Carrier', 'Battleship', 'Cruiser', 'Submarine', 'Destroyer']
+
+  const player = [
+    [1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+  ]
+
+  const cpu = [
+    [1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+  ]
+
+  useEffect(() => {
+    setPlayerBoard(playerBoard)
+    setCpuBoard(cpuBoard)
+  }, [])
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <Info />
+      <div className='boards-container'>
+        <PlayerBoard playerBoard={player} />
+        <CpuBoard cpuBoard={cpu} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Ships ship={ships} />
     </>
   )
 }
