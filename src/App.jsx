@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import Info from './components/Info'
-import './styles/Ships.css'
-// import PlayerBoard from './components/PlayerBoard'
-// import ShipsContainer from './components/ShipsContainer'
 import './styles/App.css'
+import './styles/Ships.css'
 
 function App () {
   const [playerBoard, setPlayerBoard] = useState([
@@ -20,47 +18,26 @@ function App () {
   ])
 
   class Ships {
-    constructor (name, length) {
+    constructor (name, length, color) {
       this.id = Math.random()
       this.name = name
       this.length = length
+      this.color = color
       // this.positionX = 0
       // this.positionY = 0
       // this.hits = 0
       // this.sunk = false
     }
   }
-  const carrier = new Ships('Carrier', 5)
-  const battleship = new Ships('Battleship', 3)
-  const cruiser = new Ships('Cruiser', 3)
-  const submarine = new Ships('Submarine', 2)
-  const destroyer = new Ships('Destroyer', 4)
+  const carrier = new Ships('Carrier', 5, 'green')
+  const battleship = new Ships('Battleship', 3, 'blue')
+  const cruiser = new Ships('Cruiser', 3, 'yellow')
+  const submarine = new Ships('Submarine', 2, 'pink')
+  const destroyer = new Ships('Destroyer', 4, 'red')
 
-  // const [selectedShip, setSelectedShip] = useState()
+  const [selectedShip, setSelectedShip] = useState()
 
   const shipsList = [carrier, battleship, cruiser, submarine, destroyer]
-
-  // function selectShip (ship) {
-  //   setSelectedShip(ship)
-  //   console.log(selectedShip)
-  // }
-
-  let selectedShip = {}
-
-  const selectShip = (ship) => {
-    selectedShip = ship
-    console.log(selectedShip)
-  }
-
-  let posicion = {}
-
-  function getPosition (e) {
-    const cell = e.target
-    const x = parseInt(cell.getAttribute('x'))
-    const y = parseInt(cell.getAttribute('y'))
-    posicion = { x, y }
-    console.log(posicion)
-  }
 
   function setShip (ship, x, y, orientation) {
     console.log(ship, x, y, orientation)
@@ -102,16 +79,18 @@ function App () {
               <div
                 className='row'
                 key={x}
-                onClick={(e) => getPosition(e)}
+                // onClick={(e) => getPosition(e)}
               >
                 {row.map((cell, y) => {
                   return (
+                    // console.log(selectedShip)
                     <div
-                      className={`cell ${cell === 1 ? 'alive' : 'dead'}`}
+                      className={` cell ${cell === 1 ? 'alive' : 'dead'}`}
+                      style={cell === 1 ? { backgroundColor: selectedShip.color } : {}}
                       key={y}
                       y={y}
                       x={x}
-                      onClick={() => setShip(selectedShip, posicion.x, posicion.y, 'horizontal')}
+                      onClick={() => setShip(selectedShip, x, y, 'vertical')}
                     />
                   )
                 })}
@@ -127,7 +106,7 @@ function App () {
         <div className='shipContainer '>
           {shipsList.map(ship => {
             return (
-              <span key={ship.id} className={ship.name} onClick={() => selectShip(ship)} />
+              <span key={ship.id} className={ship.name} onClick={() => setSelectedShip(ship)} />
             )
           })}
         </div>

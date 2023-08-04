@@ -28,31 +28,31 @@
 .Carrier{
   width: 150px;
   height: 30px;
-  background-color: #1cbb37;
+  background-color: green;
 
 }
 
 .Battleship{
   width: 90px;
   height: 30px;
-  background-color: #1815c2;
+  background-color: blue;
 }
 
 .Cruiser{
   width: 90px;
   height: 30px;
-  background-color: #bdce28;
+  background-color: yellow;
 }
 
 .Submarine{
   width: 60px;
   height: 30px;
-  background-color: #f306d3;
+  background-color: pink;
 }
 
 .Destroyer{
   width: 120px;
   height: 30px;
-  background-color: #df2525;
+  background-color: red;
 }
 
