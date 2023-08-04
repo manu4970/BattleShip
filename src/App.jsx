@@ -1,21 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Info from './components/Info'
 import './styles/App.css'
 import './styles/Ships.css'
 
 function App () {
-  const [playerBoard, setPlayerBoard] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  ])
+  const [playerBoard, setPlayerBoard] = useState([...Array(10)].map(() => Array(10).fill(null)))
+  const [shipsPlaced, setShipsPlaced] = useState([])
+
+  const [cpuBoard, setCpuBoard] = useState([...Array(10)].map(() => Array(10).fill(null)))
 
   class Ships {
     constructor (name, length, color) {
@@ -35,39 +27,79 @@ function App () {
   const submarine = new Ships('Submarine', 2, 'pink')
   const destroyer = new Ships('Destroyer', 4, 'red')
 
-  const [selectedShip, setSelectedShip] = useState()
+  const [selectedShip, setSelectedShip] = useState(null)
 
   const shipsList = [carrier, battleship, cruiser, submarine, destroyer]
 
   function setShip (ship, x, y, orientation) {
-    console.log(ship, x, y, orientation)
+    if (!ship || shipsPlaced.includes(ship)) return
+
     const newBoard = [...playerBoard]
+
     if (orientation === 'horizontal') {
       for (let i = 0; i < ship.length; i++) {
-        const maxAlowY = playerBoard.length - ship.length
-        if (y > maxAlowY) {
-          y = maxAlowY
-        }
-        if (newBoard[x][y + i] === 1) {
-          return newBoard
+        if (y + i >= playerBoard.length || newBoard[x][y + i]) {
+          return // Check for out of bounds and overlapping ships
         } else {
-          newBoard[x][y + i] = 1
+          newBoard[x][y + i] = ship // Store ship object in the cell
         }
       }
     }
+
     if (orientation === 'vertical') {
       for (let i = 0; i < ship.length; i++) {
-        const maxAlowX = playerBoard.length - ship.length
-        if (x > maxAlowX) {
-          x = maxAlowX
+        if (x + i >= playerBoard.length || newBoard[x + i][y]) {
+          return // Check for out of bounds and overlapping ships
+        } else {
+          newBoard[x + i][y] = ship // Store ship object in the cell
         }
-        newBoard[x + i][y] = 1
       }
     }
 
     setPlayerBoard(newBoard)
-    console.log(newBoard)
+    setShipsPlaced([...shipsPlaced, ship])
   }
+  function setShipOnCpuBoard (ship, x, y, orientation, board) {
+    if (orientation === 'horizontal') {
+      for (let i = 0; i < ship.length; i++) {
+        if (y + i >= board.length || board[x][y + i]) {
+          return false // Check for out of bounds and overlapping ships
+        } else {
+          board[x][y + i] = ship // Store ship object in the cell
+        }
+      }
+    }
+
+    if (orientation === 'vertical') {
+      for (let i = 0; i < ship.length; i++) {
+        if (x + i >= board.length || board[x + i][y]) {
+          return false // Check for out of bounds and overlapping ships
+        } else {
+          board[x + i][y] = ship // Store ship object in the cell
+        }
+      }
+    }
+
+    return true
+  }
+  useEffect(() => {
+    // This effect runs once after the component mounts to set up the CPU's ships.
+    const cpuShips = [carrier, battleship, cruiser, submarine, destroyer]
+    const newCpuBoard = [...cpuBoard]
+
+    cpuShips.forEach((ship) => {
+      let placed = false
+      while (!placed) {
+        const x = Math.floor(Math.random() * 10)
+        const y = Math.floor(Math.random() * 10)
+        const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical'
+
+        placed = setShipOnCpuBoard(ship, x, y, orientation, newCpuBoard)
+      }
+    })
+
+    setCpuBoard(newCpuBoard)
+  }, [])
 
   return (
     <>
@@ -76,17 +108,12 @@ function App () {
         <div className='board-container'>
           {playerBoard.map((row, x) => {
             return (
-              <div
-                className='row'
-                key={x}
-                // onClick={(e) => getPosition(e)}
-              >
+              <div className='row' key={x}>
                 {row.map((cell, y) => {
                   return (
-                    // console.log(selectedShip)
                     <div
-                      className={` cell ${cell === 1 ? 'alive' : 'dead'}`}
-                      style={cell === 1 ? { backgroundColor: selectedShip.color } : {}}
+                      className={`cell ${cell ? 'alive' : 'dead'}`}
+                      style={cell ? { backgroundColor: cell.color } : {}}
                       key={y}
                       y={y}
                       x={x}
@@ -100,11 +127,28 @@ function App () {
         </div>
         <h1> VS </h1>
         {/* <PlayerBoard board={cpuBoard} /> */}
+        <div className='board-container'>
+          {cpuBoard.map((row, x) => {
+            return (
+              <div className='row' key={x}>
+                {row.map((cell, y) => {
+                  return (
+                    <div
+                      className={`cell ${cell && !cell.visible ? 'hidden' : cell ? 'alive' : 'dead'}`}
+                      style={cell && cell.visible ? { backgroundColor: cell.color } : {}}
+                      key={y}
+                    />
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
       </div>
       <section>
         <h2>Ships</h2>
         <div className='shipContainer '>
-          {shipsList.map(ship => {
+          {shipsList.map((ship) => {
             return (
               <span key={ship.id} className={ship.name} onClick={() => setSelectedShip(ship)} />
             )
