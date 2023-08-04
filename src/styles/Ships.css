@@ -1,0 +1,57 @@
+/* ['Carrier', 'Battleship', 'Cruiser', 'Submarine', 'Destroyer'] */
+.shipContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    height: 200px;
+    width: 800px;
+    background-color: #4565662f;
+    border-radius: 5px;
+    margin: auto;
+    margin-bottom: 30px;
+  }
+  
+  .shipContainer>span{
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+
+.Carrier{
+  width: 150px;
+  height: 30px;
+  background-color: #1cbb37;
+
+}
+
+.Battleship{
+  width: 90px;
+  height: 30px;
+  background-color: #1815c2;
+}
+
+.Cruiser{
+  width: 90px;
+  height: 30px;
+  background-color: #bdce28;
+}
+
+.Submarine{
+  width: 60px;
+  height: 30px;
+  background-color: #f306d3;
+}
+
+.Destroyer{
+  width: 120px;
+  height: 30px;
+  background-color: #df2525;
+}
+
