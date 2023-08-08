@@ -32,8 +32,6 @@ function App () {
 
   const shipsList = [carrier, battleship, cruiser, submarine, destroyer]
 
-  const [selected, setSelected] = useState(false)
-
   function setShip (ship, x, y, orientation) {
     if (!ship || shipsPlaced.includes(ship)) return
 
