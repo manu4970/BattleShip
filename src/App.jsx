@@ -15,6 +15,7 @@ function App () {
       this.name = name
       this.length = length
       this.color = color
+      this.selected = false
       // this.positionX = 0
       // this.positionY = 0
       // this.hits = 0
@@ -31,6 +32,8 @@ function App () {
 
   const shipsList = [carrier, battleship, cruiser, submarine, destroyer]
 
+  const [selected, setSelected] = useState(false)
+
   function setShip (ship, x, y, orientation) {
     if (!ship || shipsPlaced.includes(ship)) return
 
@@ -39,9 +42,9 @@ function App () {
     if (orientation === 'horizontal') {
       for (let i = 0; i < ship.length; i++) {
         if (y + i >= playerBoard.length || newBoard[x][y + i]) {
-          return // Check for out of bounds and overlapping ships
+          return
         } else {
-          newBoard[x][y + i] = ship // Store ship object in the cell
+          newBoard[x][y + i] = ship
         }
       }
     }
@@ -49,23 +52,23 @@ function App () {
     if (orientation === 'vertical') {
       for (let i = 0; i < ship.length; i++) {
         if (x + i >= playerBoard.length || newBoard[x + i][y]) {
-          return // Check for out of bounds and overlapping ships
+          return
         } else {
-          newBoard[x + i][y] = ship // Store ship object in the cell
+          newBoard[x + i][y] = ship
         }
       }
     }
-
     setPlayerBoard(newBoard)
     setShipsPlaced([...shipsPlaced, ship])
   }
+
   function setShipOnCpuBoard (ship, x, y, orientation, board) {
     if (orientation === 'horizontal') {
       for (let i = 0; i < ship.length; i++) {
         if (y + i >= board.length || board[x][y + i]) {
-          return false // Check for out of bounds and overlapping ships
+          return false
         } else {
-          board[x][y + i] = ship // Store ship object in the cell
+          board[x][y + i] = ship
         }
       }
     }
@@ -73,9 +76,9 @@ function App () {
     if (orientation === 'vertical') {
       for (let i = 0; i < ship.length; i++) {
         if (x + i >= board.length || board[x + i][y]) {
-          return false // Check for out of bounds and overlapping ships
+          return false
         } else {
-          board[x + i][y] = ship // Store ship object in the cell
+          board[x + i][y] = ship
         }
       }
     }
@@ -83,7 +86,6 @@ function App () {
     return true
   }
   useEffect(() => {
-    // This effect runs once after the component mounts to set up the CPU's ships.
     const cpuShips = [carrier, battleship, cruiser, submarine, destroyer]
     const newCpuBoard = [...cpuBoard]
 
@@ -106,6 +108,7 @@ function App () {
       <Info />
       <div className='boards-container'>
         <div className='board-container'>
+          <h2>You</h2>
           {playerBoard.map((row, x) => {
             return (
               <div className='row' key={x}>
@@ -126,7 +129,7 @@ function App () {
           })}
         </div>
         <h1> VS </h1>
-        {/* <PlayerBoard board={cpuBoard} /> */}
+        <h2>CPU</h2>
         <div className='board-container'>
           {cpuBoard.map((row, x) => {
             return (
@@ -150,11 +153,14 @@ function App () {
         <div className='shipContainer '>
           {shipsList.map((ship) => {
             return (
-              <span key={ship.id} className={ship.name} onClick={() => setSelectedShip(ship)} />
+              <span
+                key={ship.id}
+                onClick={() => setSelectedShip(ship)}
+                className={`${ship.name} ${!ship.selected ? '' : 'selected'}`}
+              />
             )
           })}
         </div>
-        {/* <button onClick={handleClick}>Rotate</button> */}
       </section>
     </>
   )
